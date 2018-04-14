@@ -1,0 +1,45 @@
+#include<iostream>
+#include<cstdlib>
+#include<fstream>
+using namespace std;
+
+int main(int argc,char *argv[]){
+        FILE* fileTest = fopen(argv[1],"r");
+	if(!fileTest){
+		cout << "file is not exist!" << endl;
+		return EXIT_SUCCESS;
+}
+	fclose(fileTest);
+	ifstream fin;
+	ofstream fout;
+	fin.open(argv[1]);
+	fileTest = fopen(argv[2],"r");
+	if(!fileTest){
+		cout << "output file is not exist" << endl;
+		cout << "create new file ? (y/n)" << endl;
+		char choice;
+		cin >> choice;
+		if(choice == 'y'){
+			fileTest = fopen(argv[2],"w");
+			fclose(fileTest);			
+}
+		else{
+			return EXIT_SUCCESS;
+}
+}
+	else{
+		fclose(fileTest);		
+		fileTest = fopen(argv[2],"w");
+		fclose(fileTest);
+}	
+	fout.open(argv[2]);
+	char ch;
+	//peek return current character pointer, if it's end, return EOF(-1)
+	while(fin.peek()!=EOF){
+		fin.get(ch);
+		fout.put(ch);
+}
+	fin.close();
+	fout.close();
+	return 0;   
+}
