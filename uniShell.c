@@ -8,7 +8,7 @@
 
 int main(void){
 
-char *args[MAX_LINE/2 + 1];
+char *args[MAX_LINE][MAX_LINE/2 + 1];
 int should_run = 1;
 size_t len = 0;
 ssize_t nread;
@@ -18,8 +18,9 @@ char *delim = (char *)" \n";
 char *params;
 int waitFor;
 pid_t pid;
+int status;
 while(should_run){
-	waitFor = 0;
+	
 	
 	int token_num=0;
 	printf("osh>"); 
@@ -29,15 +30,16 @@ while(should_run){
 	nread = getline(&params,&len,stdin);
 	//printf("words : %s",params);
 	
-	
+	waitFor = 0;
 	temp = strtok(params,delim);	
 	while( temp != NULL){
 		
 		if (strcmp("&",temp) == 0)
 		{
+			
 			waitFor = 1;
+			//printf("&&&");
 			temp = strtok(NULL,delim);
-			token_num++;
 			continue;
 		}
 		else if (strcmp("exit",temp) == 0)
@@ -46,10 +48,10 @@ while(should_run){
 			break;
 		}
 		//printf("%s\n",temp);
-		args[token_num] = temp;
+		args[round][token_num] = temp;
 		temp = strtok(NULL,delim);
 		token_num++;
-		}
+	}
 	pid = fork();
 	if( pid < 0 ){
 		fprintf(stderr,"Fork Failed");
@@ -57,12 +59,17 @@ while(should_run){
 	}
 	else if( pid ==0 ){
 		//printf("%s ????",args[0]);
-		execvp(args[0],args);
+		execvp(args[round][0],args[round]);
+		exit(0);
 	}
-	
-
-	if(waitFor == 1)
-		wait(NULL);
+	if(waitFor == 1){
+		sleep(1);
+		//printf("wait");
+		pid = wait(&status);
+		round++;
+	}
+	else
+		round++;
 }
 if(params)
 free(params);
