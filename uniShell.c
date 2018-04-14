@@ -15,19 +15,19 @@ ssize_t nread;
 int round = 0;
 char *temp;
 char *delim = (char *)" \n";
-char *History[101];
 char *params;
-int waitFor = 0;
+int waitFor;
+pid_t pid;
 while(should_run){
 	waitFor = 0;
-	pid_t pid;
+	
 	int token_num=0;
 	printf("osh>"); 
 	fflush(stdout);
 	fflush(stdin);
 
 	nread = getline(&params,&len,stdin);
-	printf("words : %s",params);
+	//printf("words : %s",params);
 	
 	
 	temp = strtok(params,delim);	
@@ -56,14 +56,15 @@ while(should_run){
 		exit(-1);
 	}
 	else if( pid ==0 ){
-		printf("%s ????",args[0]);
+		//printf("%s ????",args[0]);
 		execvp(args[0],args);
 	}
 	
 
 	if(waitFor == 1)
 		wait(NULL);
-
 }
+if(params)
+free(params);
 return 0;
 }
